@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mini-display"
+version = "0.1.0"
+description = "Mini Display (16x32) with tiny pixel font and colored widgets for LED matrices"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "you@example.com"}
+]
+keywords = ["led", "matrix", "display", "raspberry-pi", "subway", "weather"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: System :: Hardware",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "Pillow>=9.0.0",
+    "requests>=2.25.0",
+    "nyct-gtfs>=1.0.0",
+    "protobuf>=3.19.0",
+]
+
+[project.optional-dependencies]
+rpi = [
+    "rpi-rgb-led-matrix>=0.0.1",
+]
+
+[project.scripts]
+mini-display = "mini_display.display:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/mini-display"
+"Bug Tracker" = "https://github.com/yourusername/mini-display/issues"
