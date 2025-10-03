@@ -18,6 +18,29 @@ pip install mini-display
 
 ### For Raspberry Pi with LED Matrix
 
+First, install the HZeller RGB LED Matrix library:
+
+```bash
+# Install build dependencies
+sudo apt-get update
+sudo apt-get install -y python3-dev python3-pillow
+
+# Clone and build the RGB Matrix library
+cd ~
+git clone https://github.com/hzeller/rpi-rgb-led-matrix.git
+cd rpi-rgb-led-matrix
+make build-python PYTHON=$(which python3)
+sudo make install-python PYTHON=$(which python3)
+```
+
+Then install the mini-display package:
+
+```bash
+pip install mini-display
+```
+
+Or install with the optional rpi extras (note: this may not work if rpi-rgb-led-matrix is not on PyPI):
+
 ```bash
 pip install mini-display[rpi]
 ```
@@ -32,22 +55,48 @@ pip install -e .
 
 ## Usage
 
-Run the display with default settings:
+The RGB LED Matrix requires root access to control the GPIO pins. You have two main options:
+
+### Option 1: Install system-wide (Recommended)
+
+Install the package system-wide so sudo can access it:
 
 ```bash
-mini-display
+sudo pip install /home/james/md
 ```
 
-### Command-line Options
+Then run normally with sudo:
 
 ```bash
-mini-display --rows 32 --cols 64 \
+sudo mini-display --rows 32 --cols 64 \
   --station "Jay St-MetroTech" \
   --routes "A,C,F,R" \
   --zip 11201 \
   --cycle-seconds 6 \
   --brightness 70
 ```
+
+### Option 2: Use sudo with Python path
+
+Keep your user installation and set the Python path for sudo:
+
+```bash
+sudo PYTHONPATH=/home/james/.local/lib/python3.9/site-packages python3 -m mini_display.display --rows 32 --cols 64 \
+  --station "Jay St-MetroTech" \
+  --routes "A,C,F,R" \
+  --zip 11201 \
+  --cycle-seconds 6 \
+  --brightness 70
+```
+
+Or add to sudoers to preserve environment:
+
+```bash
+# Run once to allow preserving PYTHONPATH:
+echo "$USER ALL=(ALL) NOPASSWD: SETENV: /usr/bin/python3" | sudo tee /etc/sudoers.d/mini-display
+```
+
+### Command-line Options
 
 ### Available Options
 
