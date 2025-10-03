@@ -10,6 +10,7 @@ from typing import Dict, List, Type, Optional
 
 from mini_display.plugin_base import Plugin
 from mini_display.plugins import ClockPlugin, WeatherPlugin, SubwayPlugin
+from mini_display.plugins.clock_plugin import TimezoneConfig
 
 
 class PluginAdapter:
@@ -86,8 +87,18 @@ class PluginAdapter:
         """
         plugins = []
         
-        # Clock plugin
-        clock = cls.create_plugin("clock", tz=tz)
+        # Clock plugin - convert old tz parameter to new timezones format
+        if tz:
+            # If timezone is specified, use it for both cities
+            clock = cls.create_plugin(
+                "clock",
+                timezones=[
+                    TimezoneConfig(city="Local", timezone=tz),
+                ]
+            )
+        else:
+            # Use default timezones (Melbourne and New York)
+            clock = cls.create_plugin("clock")
         if clock:
             plugins.append(clock)
         
