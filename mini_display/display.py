@@ -12,7 +12,7 @@ import threading
 import time
 from typing import List
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -22,7 +22,7 @@ except Exception as e:
 
 from mini_display.plugin_base import Plugin
 from mini_display.plugin_adapter import PluginAdapter
-from mini_display.utils import draw_small_text, clamp
+from mini_display.utils import draw_text, clamp
 
 
 def build_matrix_from_args(args) -> RGBMatrix:
@@ -100,7 +100,8 @@ def main():
             except Exception:
                 err = Image.new("RGB", (matrix.width, matrix.height), (80, 0, 0))
                 d = ImageDraw.Draw(err)
-                draw_small_text(d, 1, 5, f"{plugin.name} err", (255, 255, 255), scale=1, spacing=1)
+                font = ImageFont.load_default()
+                draw_text(d, 1, 5, f"{plugin.name} err", (255, 255, 255), font)
                 matrix.SetImage(err, 0, 0)
 
             end_at = time.time() + max(2, args.cycle_seconds)

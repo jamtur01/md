@@ -8,10 +8,10 @@ import time
 from typing import Optional, Tuple
 
 import requests
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from mini_display.plugin_base import Plugin
-from mini_display.utils import draw_small_text, measure_small_text, center_x
+from mini_display.utils import draw_text, measure_text, center_x
 
 
 @dataclasses.dataclass
@@ -74,8 +74,9 @@ class WeatherPlugin(Plugin):
         """Render temperature centered on display."""
         img = Image.new("RGB", (width, height), self.bg)
         d = ImageDraw.Draw(img)
-        w, h = measure_small_text(self._temp_c_text, scale=1, spacing=1)
+        font = ImageFont.load_default()
+        w, h = measure_text(self._temp_c_text, font)
         x = center_x(width, w)
         y = (height - h) // 2
-        draw_small_text(d, x, y, self._temp_c_text, self.fg_temp, scale=1, spacing=1)
+        draw_text(d, x, y, self._temp_c_text, self.fg_temp, font)
         return img

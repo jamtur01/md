@@ -8,10 +8,10 @@ import time
 from datetime import datetime as _dt
 from typing import Dict, List, Tuple
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from mini_display.plugin_base import Plugin
-from mini_display.utils import draw_small_text, measure_small_text, center_x
+from mini_display.utils import draw_text, measure_text, center_x
 
 try:
     from nyct_gtfs import NYCTFeed
@@ -119,16 +119,17 @@ class SubwayPlugin(Plugin):
         """Render arrival times with MTA line colors."""
         img = Image.new("RGB", (width, height), self.bg)
         d = ImageDraw.Draw(img)
+        font = ImageFont.load_default()
         lines = self._lines or [("MTA ...", self.text_fg_default)]
 
         y = 0
         used = 0
         for text, color in lines[:2]:
-            w, h = measure_small_text(text, scale=1, spacing=1)
+            w, h = measure_text(text, font)
             if used + h > height:
                 break
             x = center_x(width, w)
-            draw_small_text(d, x, y, text, color, scale=1, spacing=1)
+            draw_text(d, x, y, text, color, font)
             y += h
             if y + 1 < height:
                 y += 1

@@ -7,10 +7,10 @@ import dataclasses
 from datetime import datetime
 from typing import List, Tuple
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from mini_display.plugin_base import Plugin
-from mini_display.utils import draw_small_text, measure_small_text
+from mini_display.utils import draw_text, measure_text
 
 try:
     from zoneinfo import ZoneInfo
@@ -58,8 +58,11 @@ class ClockPlugin(Plugin):
         img = Image.new("RGB", (width, height), self.bg)
         d = ImageDraw.Draw(img)
         
-        # Calculate line height for small text
-        _, line_height = measure_small_text("A", scale=1, spacing=1)
+        # Use PIL's default font which supports all characters
+        font = ImageFont.load_default()
+        
+        # Calculate line height
+        _, line_height = measure_text("A", font)
         
         # Draw top separator line
         y = 0
@@ -70,18 +73,18 @@ class ClockPlugin(Plugin):
         for tz_config in self.timezones:
             now = self._get_time_for_tz(tz_config.timezone)
             
-            # Format: "City  mm/dd/yy at hh:mm am/pm"
+            # Format: "mm/dd/yy at hh:mm am/pm"
             date_str = now.strftime("%m/%d/%y")
             time_str = now.strftime("%I:%M %p").lstrip("0").lower()
             
             # Draw city name
             city_text = tz_config.city
-            draw_small_text(d, 1, y, city_text, self.fg_city, scale=1, spacing=1)
+            draw_text(d, 1, y, city_text, self.fg_city, font)
             y += line_height + 1
             
-            # Draw datetime on next line, slightly indented
+            # Draw datetime on next line: "mm/dd/yy at hh:mm am/pm"
             datetime_text = f"{date_str} at {time_str}"
-            draw_small_text(d, 2, y, datetime_text, self.fg_datetime, scale=1, spacing=1)
+            draw_text(d, 2, y, datetime_text, self.fg_datetime, font)
             y += line_height + 2
         
         # Draw bottom separator line
